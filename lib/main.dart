@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,9 +15,19 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.dark(
+          primary: Colors.green[700]!,
           secondary: Colors.green[700]!,
           onSecondary: Colors.white,
         ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.black54,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        // Checkbox active color
+        toggleableActiveColor: Colors.green[700]!,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -42,11 +53,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String _selectedDir = "not picked";
 
-  void _incrementCounter() {
+  void _getClientModInfos() async {
+    String? selectedDir = await FilePicker.platform.getDirectoryPath();
     setState(() {
-      _counter++;
+      if (selectedDir != null) {
+        _selectedDir = selectedDir;
+      }
     });
   }
 
@@ -64,34 +78,42 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                const Text('Enter your "mods" folder directory:'),
-                Flexible(child: TextFormField()),
-              ],
-            ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Column(
+            // Invoke "debug painting" (press "p" in the console, choose the
+            // "Toggle Debug Paint" action from the Flutter Inspector in Android
+            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+            // to see the wireframe for each widget.
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  const Text('Enter your "mods" folder directory:'),
+                  Flexible(
+                      child: TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Installation name (fake kekekw)',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                  )),
+                  OutlinedButton(
+                    onPressed: _getClientModInfos,
+                    child: const Text('...'),
+                  ),
+                ],
+              ),
+              // Under here is testing Directory Picking
+              const Text('You have picked this directory:'),
+              Text(
+                _selectedDir,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              // Above here is testing Directory Picking
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
