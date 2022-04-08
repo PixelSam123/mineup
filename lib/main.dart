@@ -1,5 +1,4 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mineup/json_models/fabric_mod.dart';
 import 'package:mineup/utils/local_utils.dart';
@@ -103,58 +102,70 @@ class _MyHomePageState extends State<MyHomePage> {
           // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
           // to see the wireframe for each widget.
           children: [
-            Row(
-              children: [
-                const Text('"mods" folder directory:'),
-                Flexible(
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Center(child: Text('"mods" folder directory:')),
+                  const SizedBox(width: 4.0),
+                  Flexible(
                     child: TextFormField(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search),
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                      controller: _directoryText,
+                      onFieldSubmitted: _setLocalMods,
+                    ),
                   ),
-                  controller: _directoryText,
-                  onFieldSubmitted: _setLocalMods,
-                )),
-                OutlinedButton(
-                  onPressed: _setDirectoryText,
-                  child: const Text('...'),
-                ),
-              ],
+                  const SizedBox(width: 4.0),
+                  OutlinedButton(
+                    onPressed: _setDirectoryText,
+                    child: const Text('...'),
+                  ),
+                ],
+              ),
             ),
             Text(
               'Local mods:',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline5,
             ),
             Column(
               children: _localMods
                   .map((mod) => Card(
-                        child: Column(
-                          children: [
-                            IntrinsicHeight(
-                              child: Row(
-                                children: [
-                                  const Text("pichere"),
-                                  const VerticalDivider(
-                                    thickness: 2.0,
-                                    indent: 0,
-                                    color: Colors.grey,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        mod.name,
-                                        style: Theme.of(context).textTheme.headline6,
-                                      ),
-                                      Text(
-                                        mod.version,
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              IntrinsicHeight(
+                                child: Row(
+                                  children: [
+                                    const Text("pichere"),
+                                    const VerticalDivider(
+                                      thickness: 2.0,
+                                      indent: 0,
+                                      color: Colors.grey,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          mod.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
+                                        Text(
+                                          mod.version,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Text(mod.description),
-                          ],
+                              Text(mod.description),
+                            ],
+                          ),
                         ),
                       ))
                   .toList(),
