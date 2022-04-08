@@ -1,7 +1,14 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:mineup/json_models/fabric_mod.dart';
+import 'package:mineup/utils/local_utils.dart';
+import 'package:window_size/window_size.dart';
 
 void main() {
+  // ensureInitialized makes sure that setting minimum window size and other things below actually work.
+  WidgetsFlutterBinding.ensureInitialized();
+  setWindowMinSize(const Size(400, 300));
+
   runApp(const MyApp());
 }
 
@@ -53,14 +60,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _selectedDir = "not picked";
+  List<FabricMod> _localMods = [];
 
-  void _getClientModInfos() async {
-    String? selectedDir = await FilePicker.platform.getDirectoryPath();
+  final TextEditingController _directoryText = TextEditingController();
+
+  void _setDirectoryText() async {
+    final selectedDir = await FilePicker.platform.getDirectoryPath();
+    if (selectedDir != null) {
+      _directoryText.text = selectedDir;
+    }
+  }
+
+  void _setLocalMods(String directory) {
+    final localMods = getLocalMods(directory);
     setState(() {
-      if (selectedDir != null) {
-        _selectedDir = selectedDir;
-      }
+      _localMods = localMods;
     });
   }
 
@@ -90,27 +104,39 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Row(
                 children: [
-                  const Text('Enter your "mods" folder directory:'),
+                  const Text('"mods" folder directory:'),
                   Flexible(
                       child: TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'Installation name (fake kekekw)',
                       prefixIcon: Icon(Icons.search),
                     ),
+                    controller: _directoryText,
+                    onFieldSubmitted: _setLocalMods,
                   )),
                   OutlinedButton(
-                    onPressed: _getClientModInfos,
+                    onPressed: _setDirectoryText,
                     child: const Text('...'),
                   ),
                 ],
               ),
-              // Under here is testing Directory Picking
-              const Text('You have picked this directory:'),
               Text(
-                _selectedDir,
-                style: Theme.of(context).textTheme.headline5,
+                'Local mods:',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              // Above here is testing Directory Picking
+              Column(
+                children: _localMods
+                    .map((mod) => Card(
+                          child: Column(
+                            children: [
+                              Text(mod.name),
+                              Text(mod.version),
+                              Text(mod.description),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
             ],
           ),
         ),
