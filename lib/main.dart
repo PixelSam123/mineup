@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mineup/json_models/fabric_mod.dart';
 import 'package:mineup/utils/local_utils.dart';
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
           ),
+          isDense: true,
+          contentPadding: const EdgeInsets.all(8),
         ),
         // Checkbox active color
         toggleableActiveColor: Colors.green[700]!,
@@ -94,51 +97,69 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            // Invoke "debug painting" (press "p" in the console, choose the
-            // "Toggle Debug Paint" action from the Flutter Inspector in Android
-            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-            // to see the wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  const Text('"mods" folder directory:'),
-                  Flexible(
-                      child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Installation name (fake kekekw)',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    controller: _directoryText,
-                    onFieldSubmitted: _setLocalMods,
-                  )),
-                  OutlinedButton(
-                    onPressed: _setDirectoryText,
-                    child: const Text('...'),
+        child: Column(
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          children: [
+            Row(
+              children: [
+                const Text('"mods" folder directory:'),
+                Flexible(
+                    child: TextFormField(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search),
                   ),
-                ],
-              ),
-              Text(
-                'Local mods:',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Column(
-                children: _localMods
-                    .map((mod) => Card(
-                          child: Column(
-                            children: [
-                              Text(mod.name),
-                              Text(mod.version),
-                              Text(mod.description),
-                            ],
-                          ),
-                        ))
-                    .toList(),
-              ),
-            ],
-          ),
+                  controller: _directoryText,
+                  onFieldSubmitted: _setLocalMods,
+                )),
+                OutlinedButton(
+                  onPressed: _setDirectoryText,
+                  child: const Text('...'),
+                ),
+              ],
+            ),
+            Text(
+              'Local mods:',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Column(
+              children: _localMods
+                  .map((mod) => Card(
+                        child: Column(
+                          children: [
+                            IntrinsicHeight(
+                              child: Row(
+                                children: [
+                                  const Text("pichere"),
+                                  const VerticalDivider(
+                                    thickness: 2.0,
+                                    indent: 0,
+                                    color: Colors.grey,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        mod.name,
+                                        style: Theme.of(context).textTheme.headline6,
+                                      ),
+                                      Text(
+                                        mod.version,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(mod.description),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ],
         ),
       ),
     );
