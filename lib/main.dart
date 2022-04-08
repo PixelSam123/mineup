@@ -19,7 +19,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      builder: (ctx, child) => MediaQuery(
+        data: MediaQuery.of(ctx).copyWith(textScaleFactor: 1.25),
+        child: child!,
+      ),
+      title: 'mineup',
       theme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.green[700]!,
@@ -129,46 +133,51 @@ class _MyHomePageState extends State<MyHomePage> {
               'Local mods:',
               style: Theme.of(context).textTheme.headline5,
             ),
-            Column(
-              children: _localMods
-                  .map((mod) => Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              IntrinsicHeight(
-                                child: Row(
-                                  children: [
-                                    const Text("pichere"),
-                                    const VerticalDivider(
-                                      thickness: 2.0,
-                                      indent: 0,
-                                      color: Colors.grey,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          mod.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
-                                        ),
-                                        Text(
-                                          mod.version,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+            Flexible(
+              child: ListView(
+                children: _localMods
+                    .map((mod) => Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                IntrinsicHeight(
+                                  child: Row(
+                                    children: [
+                                      const Text('pichere'),
+                                      const VerticalDivider(
+                                        thickness: 2.0,
+                                        indent: 0,
+                                        color: Colors.grey,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            mod.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6,
+                                          ),
+                                          Text(
+                                            mod.version,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(mod.description),
-                            ],
+                                const SizedBox(
+                                  height: 4.0,
+                                ),
+                                Text(mod.description),
+                              ],
+                            ),
                           ),
-                        ),
-                      ))
-                  .toList(),
+                        ))
+                    .toList(),
+              ),
             ),
           ],
         ),
