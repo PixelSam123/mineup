@@ -1,7 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:mineup/json_models/fabric_mod.dart';
-import 'package:mineup/utils/local_utils.dart';
+import 'package:mineup/other_models/fabric_mod_with_icon.dart';
+import 'package:mineup/utils/local.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:window_size/window_size.dart';
 
 void main() {
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.green[700]!,
+          onPrimary: Colors.white,
           secondary: Colors.green[700]!,
           onSecondary: Colors.white,
         ),
@@ -66,7 +68,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<FabricMod> _localMods = [];
+  List<FabricModWithIcon> _localMods = [];
 
   final TextEditingController _directoryText = TextEditingController();
 
@@ -82,6 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _localMods = localMods;
     });
+  }
+
+  void _setLocalModsWithButton() {
+    _setLocalMods(_directoryText.text);
+  }
+
+  void _contactDropdownOnChanged(String? value) {
+    if (value != null) {
+      url_launcher.launch(value);
+    }
   }
 
   @override
@@ -126,6 +138,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: _setDirectoryText,
                     child: const Text('...'),
                   ),
+                  const SizedBox(width: 4.0),
+                  ElevatedButton(
+                    onPressed: _setLocalModsWithButton,
+                    child: const Text('Load'),
+                  ),
+                  const SizedBox(width: 4.0),
+                  ElevatedButton(
+                    // TODO
+                    onPressed: () {},
+                    child: const Text('Check for Updates'),
+                  ),
                 ],
               ),
             ),
@@ -140,38 +163,80 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IntrinsicHeight(
-                                  child: Row(
-                                    children: [
-                                      const Text('pichere'),
-                                      const VerticalDivider(
-                                        thickness: 2.0,
-                                        indent: 0,
-                                        color: Colors.grey,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IntrinsicHeight(
+                                      child: Row(
                                         children: [
-                                          Text(
-                                            mod.name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6,
+                                          mod.icon != null
+                                              ? ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                  child: Image.memory(
+                                                    mod.icon!,
+                                                    semanticLabel:
+                                                        "${mod.fabricMod.name} icon",
+                                                    width: 48.0,
+                                                    height: 48.0,
+                                                    fit: BoxFit.cover,
+                                                    filterQuality:
+                                                        // Choosing image antialiasing method based on file size.
+                                                        mod.icon!.length < 1600
+                                                            ? FilterQuality.none
+                                                            : FilterQuality
+                                                                .high,
+                                                  ),
+                                                )
+                                              : const Text('icon not found'),
+                                          const VerticalDivider(
+                                            thickness: 2.0,
+                                            indent: 0,
+                                            color: Colors.grey,
                                           ),
-                                          Text(
-                                            mod.version,
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                mod.fabricMod.name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6,
+                                              ),
+                                              Text(
+                                                mod.fabricMod.version,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    DropdownButton(
+                                        hint: const Text('Contact'),
+                                        items: mod.fabricMod.contact.keys
+                                            .map((socialMediaName) =>
+                                                DropdownMenuItem(
+                                                  value: mod.fabricMod
+                                                      .contact[socialMediaName],
+                                                  child: Text(socialMediaName
+                                                              .length >
+                                                          1
+                                                      ? "${socialMediaName[0].toUpperCase()}${socialMediaName.substring(1)}"
+                                                      : socialMediaName),
+                                                ))
+                                            .toList(),
+                                        onChanged: _contactDropdownOnChanged),
+                                  ],
                                 ),
                                 const SizedBox(
                                   height: 4.0,
                                 ),
-                                Text(mod.description),
+                                Text(mod.fabricMod.description),
                               ],
                             ),
                           ),
