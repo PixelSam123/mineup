@@ -237,6 +237,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   height: 4.0,
                                 ),
                                 Text(mod.fabricMod.description),
+                                ExpansionTile(
+                                  title: const Text('Versions on Modrinth'),
+                                  children: [
+                                    const Text('pretend v2'),
+                                    const Text('pretend v1'),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
