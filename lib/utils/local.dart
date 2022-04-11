@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:mineup/other_models/fabric_mod_with_icon.dart';
+import 'package:mineup/other_models/mod_info.dart';
 
 import 'package:mineup/json_models/fabric_mod.dart';
 
-List<FabricModWithIcon> getLocalMods(String directory) {
+List<ModInfo> getLocalMods(String directory) {
   final modsDirectory = Directory(directory);
 
   final modInfos = modsDirectory
@@ -25,7 +25,7 @@ List<FabricModWithIcon> getLocalMods(String directory) {
             FabricMod.fromJson(jsonDecode(utf8.decode(modInfoFile.content)));
         final iconFile = jarFile.findFile(modInfo.icon);
 
-        return FabricModWithIcon(fabricMod: modInfo, icon: iconFile?.content);
+        return ModInfo(fabricMod: modInfo, icon: iconFile?.content);
       })
       .where((modInfo) => modInfo != null)
       .map((modInfo) => modInfo!);

@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:mineup/other_models/fabric_mod_with_icon.dart';
+import 'package:mineup/other_models/mod_info.dart';
 import 'package:mineup/utils/local.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:window_size/window_size.dart';
@@ -68,7 +68,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<FabricModWithIcon> _localMods = [];
+  List<ModInfo> _localMods = [];
 
   final TextEditingController _directoryText = TextEditingController();
 
